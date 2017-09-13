@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+
+<head>
+  <link rel="stylesheet" href="memory.css">
+
+  <title> Memory Game </title>
+  <script src="dist/sweetalert.min.js"></script> <link rel="stylesheet" href="dist/sweetalert.css">
+</head>
+<body>
+<script>
+var cards = ['bird','bird',"dog","dog","cat","cat","raccoon","raccoon","owl","owl","monkey","monkey","chicken","chicken", "panda","panda"];
+var memory_values = []; //storing the card values
+var memory_tile_ids = []; // store card til id
+var cards_flipped = 0; //keeps track of how many cards are flipped
+var moves = 0;
+
+var starFilledSrc = "images/filledstar.png"
+var starEmptySrc = "images/emptystar.png"
+
+Array.prototype.memory_tile_shuffle = function(){ //shuffles the deck each new game
+    var i = this.length, j, temp;
+    while(--i > 0){
+        j = Math.floor(Math.random() * (i+1));
+        temp = this[j];
+        this[j] = this[i];
+        this[i] = temp;
+    }
+}
+function newBoard(){ // sets the cards flipped as zero then it shuffles the cards. It goes through every card and sets them as a div in the output string.
+  totalSeconds = 0;
+  cards_flipped = 0;
+  moves = 0;
+  updateMoves(); //resets move count
+  playerRating(moves); //resets star rating
+  document.getElementById("timer").innerHTML = "Timer: 0:00";
+  startTimer();
+	var output = '';
+    cards.memory_tile_shuffle();
+	for(var i = 0; i < cards.length; i++){
+		output += '<div id="tile_'+i+'" onclick="executeGame(this,\''+cards[i]+'\')"></div>';
+	}
+	document.getElementById('memory_board').innerHTML = output;
+}
+
+//determines rating based on how many moves the player takes
+// also updates the Stars on the page
+function playerRating(moves) {
+  var filledStar1 = document.getElementById("star1");
+  var filledStar2 = document.getElementById("star2");
+  var filledStar3 = document.getElementById("star3");
+
+  var rating = 3;
+  if (moves > 10 && moves <= 13) {
+    filledStar3.src = starEmptySrc;
+    rating = 2;
+  } else if (moves >= 14) {
+    filledStar3.src = starEmptySrc;
+    filledStar2.src = starEmptySrc;
+    rating = 1;
+
+  } else {
+    filledStar1.src = starFilledSrc;
+    filledStar2.src = starFilledSrc;
+    filledStar3.src = starFilledSrc;
+    rating = 3;
+  }
+  return rating;
+ }
+
+function canFlipCard(tile) { // There is nothing in the div because there is less then 2 cards flipped.
+  if(tile.innerHTML == "" && memory_values.length < 2){
+    return true;
+  }
+}
+
+function ifOnlyOneCardFlipped() { ////checking if there is 1 card flipped by looking at memory values
+  moves++;
+  updateMoves();
+  return memory_values.length == 1;
+
+}
+function ifNoCardsFlipped() { //checking if there are no cards flipped by looking at memory values
+  return memory_values.length == 0;
+}
+
+function findingMatchingCards() { // checking if the card values are a match
+  return memory_values[0] == memory_values[1];
+}
+
+function checkGameOver() { //we can check this by checking the length of the cards list.
+  return cards_flipped == cards.length;
+}
+
+function gameOver() { // pop up screen for user appears and clean the memroy board and set as new board
+  popup();
+  document.getElementById('memory_board').innerHTML = "";
+  //newBoard();
+
+}
+
+function flipCard(tile, value) { //this flips the card
+  tile.style.background = '#fff';
+  tile.innerHTML = value;
+}
+
+var timerVar;
+var totalSeconds = 0;
+function gameTimer() { //game timer
+   totalSeconds++;
+   var minute = parseInt(totalSeconds/60);
+   var seconds = totalSeconds%60;
+   if(seconds < 10) { seconds = "0"+seconds;}
+
+   document.getElementById("timer").innerHTML = "Timer: " + minute + ":" + seconds;
+}
+
+function startTimer() { //used to start timer. Used this to start timer after a new game starts
+  timerVar = setInterval(gameTimer, 1000);
+}
+
+function stopTimer() { // stops the timer when the game is over
+  clearTimeout(timerVar);
+}
+
+function popup(){ // popup modal that appears when game over
+  stopTimer();
+  swal({
+    title: "Congratulations!",
+    text: "Moves: " + moves + " Rating: " + playerRating(moves) + "\n Would you like to play again?" + "\n Time: " + totalSeconds + " seconds",
+    type: "success",
+    showCancelButton: false,
+    confirmButtonText: "Yes, let's play again!",
+    closeOnConfirm: true,
+    html: false
+  }, function(){
+    newBoard()
+  });
+}
+
+function updateMoves() { //updates the move count
+  playerRating(moves);
+  document.getElementById("moves").innerHTML = "Moves: " + moves;
+}
+
+function executeGame(tile,val){ //executes the entire game with the tiles and their values
+  if(canFlipCard(tile)){
+		tile.style.background = '#fff'; //flips card to show images with white background
+		tile.innerHTML = '<img src="images/' + val + '.png"/>';
+		if(ifNoCardsFlipped()){
+			memory_values.push(val); //setting cards as flipped
+			memory_tile_ids.push(tile.id);
+		} else if(ifOnlyOneCardFlipped()){
+			memory_values.push(val);
+			memory_tile_ids.push(tile.id);
+			if(findingMatchingCards()){
+				cards_flipped += 2;  // if the cards match thn we can add them to the cards flipped variable.
+				memory_values = [];
+            	memory_tile_ids = [];
+				if(checkGameOver()){
+          gameOver();
+				}
+			} else {
+				function flipCardBack(){ //this turns the card back over to its original color and sets the value to empty
+				    var tile_1 = document.getElementById(memory_tile_ids[0]);
+				    var tile_2 = document.getElementById(memory_tile_ids[1]);
+				    tile_1.style.background = 'no-repeat';
+            	    tile_1.innerHTML = "";
+				    tile_2.style.background = 'no-repeat';
+            	    tile_2.innerHTML = "";
+				    memory_values = [];
+            	    memory_tile_ids = [];
+
+				}
+				setTimeout(flipCardBack, 1000); //if no match, flips the card back over
+			}
+		}
+	}
+}
+</script>
+</head>
+
+<h1 class="title">Memory Game</h1>
+<!--<input type="button" value="Restart Game" onClick="popup()">-->
+<input type="button" value="Restart Game" onClick="window.location.reload()">
+<div id="moves">Moves: 0</div>
+<div id="timer">Timer: 0:00</div>
+<!-- //<div>Icons made by <a href="http://www.flaticon.com/authors/madebyoliver" title="Madebyoliver">Madebyoliver</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div> -->
+<div id="starRating">
+  <ul id="stars" class="starlist" style="list-style-type:none">
+     <li><img src="/Users/JessicaValtierra/Documents/Udacity/Javascript/memoryGame/images/filledstar.png" id="star1" alt = "filled star"> </li>
+     <li><img src="/Users/JessicaValtierra/Documents/Udacity/Javascript/memoryGame/images/filledstar.png" id="star2" alt = "filled star"> </li>
+     <li><img src="/Users/JessicaValtierra/Documents/Udacity/Javascript/memoryGame/images/filledstar.png" id="star3" alt = "filled star"> </li>
+   </ul>
+</div>
+<p id="rating"></p>
+<div id="memory_board"></div>
+<script>newBoard();</script>
+</body>
+</html>

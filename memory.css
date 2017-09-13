@@ -1,0 +1,77 @@
+body {
+  background-color: #f4ea73;
+}
+
+.title {
+  color: rgba(255,94,98,1);
+  font-size: 32px;
+  margin-top: 40;
+  font-family: Verdana, Geneva, sans-serif;
+  text-align: center;
+}
+
+input[type=button]{
+  height: 100px;
+  width: 100px;
+  text-align: center;
+  margin-left: 40px;
+  margin-right: 20px;
+  margin-bottom: 15px;
+}
+
+div#memory_board{
+	background: #f7f77b;
+	border: #999 1px solid;
+	width: 540px;
+	height: 540px;
+	padding: 24px;
+	margin: 0px auto;
+  box-shadow: 10px 10px 5px #888888;
+  -moz-border-radius: 10px; /* for Firefox */
+  -webkit-border-radius: 10px; /* for Webkit-Browsers */
+  border-radius: 10px; /* regular */
+  background: -moz-linear-gradient(45deg, rgba(255,153,102,1) 0%, rgba(255,94,98,1) 100%); /* ff3.6+ */
+  background: -webkit-gradient(linear, left bottom, right top, color-stop(0%, rgba(255,153,102,1)), color-stop(100%, rgba(255,94,98,1))); /* safari4+,chrome */
+  background: -webkit-linear-gradient(45deg, rgba(255,153,102,1) 0%, rgba(255,94,98,1) 100%); /* safari5.1+,chrome10+ */
+  background: -o-linear-gradient(45deg, rgba(255,153,102,1) 0%, rgba(255,94,98,1) 100%); /* opera 11.10+ */
+  background: -ms-linear-gradient(45deg, rgba(255,153,102,1) 0%, rgba(255,94,98,1) 100%); /* ie10+ */
+  background: linear-gradient(45deg, rgba(255,153,102,1) 0%, rgba(255,94,98,1) 100%); /* w3c */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff5e62', endColorstr='#ff9966',GradientType=1 ); /* ie6-9 */
+}
+div#memory_board > div{
+	border:#fff 3px solid;
+	width: 71px;
+	height: 71px;
+	float: left;
+	margin: 10px;
+	padding: 20px;
+	font-size: 24px;
+	text-align: center;
+  border-color: #f4ea73;
+  border-width: 2px;
+  -moz-transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  -webkit-transition: 1.0s;
+  -moz-border-radius: 10px;  /* for Firefox */
+  -webkit-border-radius: 10px; /* for Webkit-Browsers */
+  border-radius: 10px; /* regular */
+}
+
+.starlist li {
+  float: left;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.moves {
+  text-align: center;
+  float: left;
+  margin-left: 20px;
+}
+
+.timer,label {
+  float: left;
+  font-size: 18px;
+  text-align: center;
+  float: left;
+}
